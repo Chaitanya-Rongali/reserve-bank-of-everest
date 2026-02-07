@@ -15,3 +15,7 @@ export const updateCustomerDetails = async (updateDetails: any, id: string) => {
     })
     return result;
 }
+export const deleteCustomerServices=async(customerId:string)=>{
+    const result= await customer.update({ is_deleted: true }, { where: { id: customerId } })
+    return result;
+}
