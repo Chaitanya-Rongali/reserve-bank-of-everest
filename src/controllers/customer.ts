@@ -1,5 +1,5 @@
 import { Request, Response } from "express"
-import { createCustomer, fetchCustomerDetails, updateCustomerDetails } from "../services/customer"
+import { createCustomer, deleteCustomerServices, fetchCustomerDetails, updateCustomerDetails } from "../services/customer"
 import { customer } from "../models/customer"
 
 export const addCustomer = async (req: Request, res: Response) => {
@@ -68,4 +68,22 @@ export const modifiyCustomerDetails = async (req: Request, res: Response) => {
 
     }
 
+}
+export const deleteCustomer = async (req: Request, res: Response) => {
+    try {
+        const customerId = req.params.id as string
+        if (!customerId) {
+            return res.status(400).send('id is required');
+        }
+        const findCustomer = await customer.findByPk(customerId)
+        if (!findCustomer) {
+            return res.status(400).send("Customer not exists")
+        }
+        const result=await deleteCustomerServices(customerId)
+        console.log(result)
+         return res.status(200).send({message:"Successfully delted the customer"});
+
+    } catch (error) {
+        res.status(500).send({ message: "Error while deleted customer", error })
+    }
 }
