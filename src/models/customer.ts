@@ -63,7 +63,12 @@ export const customer = sequelize.define(
         updatedAt: {
             allowNull: false,
             type: Sequelize.DATE
-        }
+        },
+        is_deleted:{
+        allowNull: false,
+        defaultValue:false,
+        type:Sequelize.BOOLEAN
+      }
     }
 
 )
