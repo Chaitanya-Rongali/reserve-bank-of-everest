@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { customer } from "../models/customer";
 import { branch } from "../models/branch";
-import { addAccount } from "../services/account";
+import { addAccount, blockStatusServices } from "../services/account";
 import { auditlogs } from "../models/auditlogs";
 import { account } from "../models/account"
 import { sequelize } from "../config/config";
@@ -36,9 +36,53 @@ export const createAccount = async (req: Request, res: Response) => {
         await transaction.commit();
         return res.status(201).send({ message: "Successfully create account", result })
     } catch (error) {
+        await auditlogs.create({
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "POST",
+            before_status: {},
+            after_status: error
+        })
         await transaction.rollback();
         return res.status(500).send({ message: "Error while creatinmg task", error })
     }
 
+}
+
+export const blockStatus=async(req:Request,res:Response)=>{
+    const id =req.params.id as string;
+    const {isBlocked}=req.body
+    const transaction = await sequelize.transaction();
+    try{
+    if(!id){
+        return res.status(400).send({message:"id is required"})
+    }
+    const findAccount=await account.findOne({where:{
+        id:id
+    }})
+    if(!findAccount){
+        return res.status(404).send({ message: "Account not found" });
+    }
+    const result=await blockStatusServices(id,isBlocked)
+    await auditlogs.create({
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "POST",
+            before_status: {},
+            after_status: result
+        },{transaction })
+     await transaction.commit()
+     return res.status(201).send({message:`succesfully ${isBlocked?'blocked':'unblocked'} account`})
+    }catch(error){
+        await auditlogs.create({
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "POST",
+            before_status: {},
+            after_status: error
+        })
+        await transaction.rollback();
+        return res.status(500).send({message:`Error while ${isBlocked?'blocked':'unblocked'} account`,error})
+    }
 }
 
