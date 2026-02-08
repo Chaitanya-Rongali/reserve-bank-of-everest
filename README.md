@@ -51,6 +51,13 @@ This banking application is used for customer can create accounts in the bank an
    ```
    
 ##  Features:
+- Implement api for create customer.
+- Implement api for get customer details.
+- Implement api for update customer details.
+- Implement api for soft delete customer.
+- Implement api for Create bank account for customer.
+- Implement api for block/unblock account.
+- Implement audit logs while creating account and account while block/unblock.
 
 
 
