@@ -49,7 +49,11 @@ export const account = sequelize.define(
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }   
+      },
+      isBlocked:{
+          type: Sequelize.BOOLEAN,
+          defaultValue: false,
+        }
     }
 
 )
