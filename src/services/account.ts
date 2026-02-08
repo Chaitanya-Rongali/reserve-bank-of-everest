@@ -11,3 +11,12 @@ export const addAccount = async (account_number: string, account_type: string, b
     },{transaction})
     return result;
 }
+
+export const blockStatusServices=async(id:string,isBlocked:boolean)=>{
+    const result= await account.update({isBlocked},{
+    where: {
+      id: id,
+    },
+  })
+  return result;
+}
