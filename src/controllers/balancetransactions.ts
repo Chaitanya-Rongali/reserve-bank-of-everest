@@ -27,6 +27,12 @@ export const transactions = async (req: Request, res: Response) => {
         if (balance < 0) {
             throw new Error('balance must be postive');
         }
+        if(sendingCustomer.isBlocked){
+            throw new Error('Acccount is blocked, not possible to send balance')
+        }
+         if(receivingCustomer.isBlocked){
+            throw new Error('Acccount is blocked, not possible to receive balance')
+        }
         const prevSendingCustomer = sendingCustomer.dataValues;
         const prevReceivingCustomer = receivingCustomer.dataValues;
         const prevState = { prevSendingCustomer, prevReceivingCustomer }
