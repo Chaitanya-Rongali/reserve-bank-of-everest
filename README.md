@@ -58,6 +58,12 @@ This banking application is used for customer can create accounts in the bank an
 - Implement api for Create bank account for customer.
 - Implement api for block/unblock account.
 - Implement audit logs while creating account and account while block/unblock.
+- Implement api for customer can add balance his account.
+- Implement api for customer can withdraw balance his account.
+- Implement all operations in transaction.
+- Implement if any operation fails in the transaction, then roll back the transaction.
+- Implement handle edge case that is customer can not withdraw more than his pervious balance.
+- Implement api for debit one account and credit to another account.
 
 
 
