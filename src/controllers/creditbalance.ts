@@ -9,12 +9,10 @@ export const creditBalance = async (req: Request, res: Response) => {
     const transaction = await sequelize.transaction();
     try {
         if (!accountId) {
-             await transaction.rollback();
-            return res.status(400).send({ message: "all values are required" })
+            throw new Error('all values are required');
         }
-        if(balance<0){
-             await transaction.rollback();
-            return res.status(400).send({message:"balance must be postive"})
+        if (balance < 0) {
+            throw new Error('balance must be postive');
         }
         const findId = await account.findOne({
             where: {
@@ -24,33 +22,31 @@ export const creditBalance = async (req: Request, res: Response) => {
             transaction,
         })
         if (!findId) {
-             await transaction.rollback();
-            return res.status(404).send({ message: "Account not found" })
+            throw new Error('Account not found');
         }
         if (findId?.dataValues.isBlocked) {
-            await transaction.rollback();
-            return res.status(403).send({ message: "Account is blocked, Not possible to credit this account" })
+            throw new Error('Account is blocked, Not possible to credit this account');
         }
-        const result=await depositBalance(balance,findId)
+        const result = await depositBalance(balance, findId)
         await auditlogs.create({
-                    url: req.originalUrl,
-                    table_name: account.tableName,
-                    operation_type: "Deposit",
-                    before_status: balance,
-                    after_status: result.dataValues
-                },{ transaction })
-         await transaction.commit();
-         return res.status(201).send({message:"Successfully credit to account",result})
-        
-    } catch (error) {
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "Deposit",
+            before_status: balance,
+            after_status: result.dataValues
+        }, { transaction })
+        await transaction.commit();
+        return res.status(201).send({ message: "Successfully credit to account", result })
+
+    } catch (error:any) {
+       await auditlogs.create({
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "Deposit",
+            before_status: balance,
+            after_status: error.message
+        })
         await transaction.rollback();
-        await auditlogs.create({
-                    url: req.originalUrl,
-                    table_name: account.tableName,
-                    operation_type: "Deposit",
-                    before_status: balance,
-                    after_status: error
-                },{ transaction })
-         res.status(500).send({ message: "Error while credit balance his account", error })
+       return res.status(500).send(error.message)
     }
 }
