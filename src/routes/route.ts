@@ -3,6 +3,7 @@ import { addCustomer, deleteCustomer, getCustomersDeatils, modifiyCustomerDetail
 import { blockStatus, createAccount } from "../controllers/account";
 import { creditBalance } from "../controllers/creditbalance";
 import { DebitBalance } from "../controllers/withdraw";
+import { transactions } from "../controllers/balancetransactions";
 export const router=express.Router();
 router.post('/createCustomer',addCustomer)
 router.get('/fetchCustomers',getCustomersDeatils)
@@ -12,3 +13,4 @@ router.post('/addAccount/:id',createAccount)
 router.put('/blockOrUnblockStatus/:id',blockStatus)
 router.put('/creditMoney/:id',creditBalance)
 router.put('/withDrawBalance/:id',DebitBalance)
+router.put('/trnascations',transactions)
