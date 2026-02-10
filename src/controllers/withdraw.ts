@@ -38,7 +38,7 @@ export const DebitBalance = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "withDraw",
             before_status: prevBalance,
-            after_status: result.dataValues
+            after_status: {message:"Successfully withdraw from account"}
         }, { transaction })
         await transaction.commit();
         return res.status(201).send({ message: "Successfully withdraw from account", result })
@@ -49,7 +49,7 @@ export const DebitBalance = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "withDraw",
             before_status: balance,
-            after_status: error.message
+            after_status: {message:"Fail while withdraww money"}
         })
         await transaction.rollback();
         return res.status(500).send(error.message)
