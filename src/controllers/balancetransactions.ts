@@ -42,11 +42,18 @@ export const transactions = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "Transfer",
             before_status:prevState,
-            after_status:result,
+            after_status:{message:`Sucessfully trnasefer from ${sendAccountId} to ${recevierAccountId}`},
         }, { transaction })
         await transaction.commit();
         return res.send({ message: `successfully ${balance} rupees to the ${recevierAccountId}` })
     } catch (error: any) {
+        await auditlogs.create({
+            url: req.originalUrl,
+            table_name: account.tableName,
+            operation_type: "Transfer",
+            before_status:{},
+            after_status:{message:"Fail while transefering balance"},
+        }, { transaction })
         await transaction.rollback();
         return res.status(500).send(error.message)
     }
