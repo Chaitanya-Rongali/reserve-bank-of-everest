@@ -31,7 +31,7 @@ export const createAccount = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "POST",
             before_status: {},
-            after_status: result.dataValues
+            after_status: {message:"Account create succefully"}
         },{ transaction })
         await transaction.commit();
         return res.status(201).send({ message: "Successfully create account", result })
@@ -41,7 +41,7 @@ export const createAccount = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "POST",
             before_status: {},
-            after_status: error
+            after_status: {message:"failed while account creation"}
         })
         await transaction.rollback();
         return res.status(500).send({ message: "Error while creatinmg task", error })
@@ -69,7 +69,7 @@ export const blockStatus=async(req:Request,res:Response)=>{
             table_name: account.tableName,
             operation_type: "POST",
             before_status: {},
-            after_status: result
+            after_status: {message:`succesfully ${isBlocked?'blocked':'unblocked'} account`}
         },{transaction })
      await transaction.commit()
      return res.status(201).send({message:`succesfully ${isBlocked?'blocked':'unblocked'} account`})
@@ -79,7 +79,7 @@ export const blockStatus=async(req:Request,res:Response)=>{
             table_name: account.tableName,
             operation_type: "POST",
             before_status: {},
-            after_status: error
+            after_status: {message:`Error while ${isBlocked?'blocked':'unblocked'} account`}
         })
         await transaction.rollback();
         return res.status(500).send({message:`Error while ${isBlocked?'blocked':'unblocked'} account`,error})
