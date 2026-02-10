@@ -33,7 +33,7 @@ export const creditBalance = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "Deposit",
             before_status: balance,
-            after_status: result.dataValues
+            after_status: {message:"Sucessfully deposit the balance"}
         }, { transaction })
         await transaction.commit();
         return res.status(201).send({ message: "Successfully credit to account", result })
@@ -44,7 +44,7 @@ export const creditBalance = async (req: Request, res: Response) => {
             table_name: account.tableName,
             operation_type: "Deposit",
             before_status: balance,
-            after_status: error.message
+            after_status: {message:"Fail while deposit the balance"}
         })
         await transaction.rollback();
        return res.status(500).send(error.message)
